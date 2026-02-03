@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Gothiksmile Emoji-Match Builder</title>
+    <style>
+        :root { --accent: #ff0055; --panel-bg: #1a1a1a; }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; margin: 0; display: flex; height: 100vh; background: #0f0f0f; color: white; overflow: hidden; }
+        
+        .preview-area { flex: 1; display: flex; justify-content: center; align-items: center; background: radial-gradient(circle, #252525 0%, #000 100%); position: relative; }
+        .editor-sidebar { width: 340px; padding: 25px; background: var(--panel-bg); border-left: 1px solid #333; overflow-y: auto; box-shadow: -10px 0 30px rgba(0,0,0,0.5); }
+        
+        h2 { margin: 0 0 20px; font-size: 1.2rem; color: var(--accent); text-transform: uppercase; letter-spacing: 2px; }
+        .group { margin-bottom: 15px; background: rgba(255,255,255,0.03); padding: 15px; border-radius: 12px; }
+        label { display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 8px; color: #888; text-transform: uppercase; }
+        input[type="range"], input[type="color"] { width: 100%; cursor: pointer; }
+        
+        .btn-main { width: 100%; padding: 15px; border: none; border-radius: 12px; cursor: pointer; font-weight: bold; margin-top: 10px; transition: 0.3s; background: var(--accent); color: white; font-size: 14px; }
+        .btn-main:hover { filter: brightness(1.2); transform: translateY(-2px); box-shadow: 0 5px 15px var(--accent); }
+
+        #main-player { transition: all 0.2s ease; display: flex; flex-direction: column; align-items: center; }
+        .screen { border-radius: 50%; display: flex; justify-content: center; align-items: center; position: relative; overflow: hidden; background: #000; margin-bottom: 25px; }
+        .btn-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+        .p-btn { display: flex; justify-content: center; align-items: center; border: 1px solid rgba(255,255,255,0.1); transition: 0.2s; cursor: pointer; pointer-events: none; }
+    </style>
+</head>
+<body>
+
+<div class="preview-area">
+    <div id="main-player">
+        <div id="p-label" style="font-size: 10px; letter-spacing: 4px; margin-bottom: 15px; font-weight: bold;">PLAYING NOW</div>
+        <div class="screen" id="p-screen">
+            <span id="p-status" style="font-size: 10px; opacity: 0.4;">READY</span>
+        </div>
+        <div class="btn-grid">
+            <div class="p-btn">😤</div><div class="p-btn">☺️</div><div class="p-btn">😍</div>
+            <div class="p-btn">🤔</div><div class="p-btn">😢</div><div class="p-btn">😳</div>
+        </div>
+    </div>
+</div>
+
+<div class="editor-sidebar">
+    <h2>Widget Config</h2>
+    <div class="group">
+        <label>Console Color</label>
+        <input type="color" id="c-bg" value="#1a1a1a" oninput="draw()">
+        <label style="margin-top:10px;">Transparency</label>
+        <input type="range" id="c-alpha" min="0" max="1" step="0.01" value="0.95" oninput="draw()">
+    </div>
+    <div class="group">
+        <label>Accent Color (Circle)</label>
+        <input type="color" id="c-accent" value="#ff0055" oninput="draw()">
+    </div>
+    <div class="group">
+        <label>Button Color</label>
+        <input type="color" id="c-btn" value="#2a2a2a" oninput="draw()">
+    </div>
+    <div class="group">
+        <label>Player Scale</label>
+        <input type="range" id="c-scale" min="0.5" max="1.5" step="0.01" value="1" oninput="draw()">
+    </div>
+    <button class="btn-main" onclick="copyCode()">COPY GENERATED CODE</button>
+</div>
+
+<script>
+    function draw() {
+        const bg = document.getElementById('c-bg').value, alpha = document.getElementById('c-alpha').value, accent = document.getElementById('c-accent').value, btnColor = document.getElementById('c-btn').value, scale = document.getElementById('c-scale').value;
+        const r = parseInt(bg.slice(1,3), 16), g = parseInt(bg.slice(3,5), 16), b = parseInt(bg.slice(5,7), 16);
+        const p = document.getElementById('main-player');
+        p.style.backgroundColor = `rgba(${r},${g},${b},${alpha})`;
+        p.style.padding = "40px 30px"; p.style.borderRadius = "50px"; p.style.transform = `scale(${scale})`; p.style.border = `1px solid rgba(255,255,255,0.1)`;
+        const sc = document.getElementById('p-screen');
+        sc.style.width = "160px"; sc.style.height = "160px"; sc.style.border = `4px solid ${accent}`; sc.style.boxShadow = `0 0 20px ${accent}, inset 0 0 15px ${accent}`;
+        document.getElementById('p-label').style.color = accent;
+        document.getElementById('p-status').style.color = accent;
+        document.querySelectorAll('.p-btn').forEach(btn => {
+            btn.style.background = btnColor; btn.style.borderRadius = "15px"; btn.style.width = "55px"; btn.style.height = "55px"; btn.style.fontSize = "24px";
+        });
+    }
+
+    function copyCode() {
+        const bg = document.getElementById('c-bg').value, alpha = document.getElementById('c-alpha').value, accent = document.getElementById('c-accent').value, btnColor = document.getElementById('c-btn').value, scale = document.getElementById('c-scale').value;
+        const r = parseInt(bg.slice(1,3), 16), g = parseInt(bg.slice(3,5), 16), b = parseInt(bg.slice(5,7), 16);
+
+        const code = `<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { margin: 0; background: transparent; display: flex; justify-content: center; align-items: center; height: 100vh; font-family: sans-serif; overflow: hidden; }
+        .card { background: rgba(${r},${g},${b},${alpha}); padding: 40px 30px; border-radius: 50px; text-align: center; transform: scale(${scale}); border: 1px solid rgba(255,255,255,0.1); width: 240px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); color: white; }
+        .scr { width: 160px; height: 160px; border-radius: 50%; border: 4px solid ${accent}; margin: 0 auto 25px; overflow: hidden; position: relative; box-shadow: 0 0 20px ${accent}, inset 0 0 15px ${accent}; background: #000; }
+        .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+        .btn { background: ${btnColor}; border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; font-size: 24px; padding: 12px; cursor: pointer; transition: 0.2s; color: white; line-height: 1; border: 1px solid transparent; }
+        .btn:hover { transform: translateY(-3px); border-color: ${accent}; }
+        img { width: 100%; height: 100%; object-fit: cover; display: none; pointer-events: none; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div style="color:${accent}; font-size: 10px; letter-spacing: 4px; margin-bottom: 15px; font-weight: bold;">PLAYING NOW</div>
+        <div class="scr" id="sc"><img id="rx" src=""></div>
+        <div class="grid">
+            <button class="btn" onclick="go('😤')">😤</button>
+            <button class="btn" onclick="go('☺️')">☺️</button>
+            <button class="btn" onclick="go('😍')">😍</button>
+            <button class="btn" onclick="go('🤔')">🤔</button>
+            <button class="btn" onclick="go('😢')">😢</button>
+            <button class="btn" onclick="go('😳')">😳</button>
+        </div>
+    </div>
+    <script>
+        const BASE = "https://raw.githubusercontent.com/gothiksmile/feedback_player/main/";
+        let currentAudio = null;
+
+        function go(emoji) {
+            const img = document.getElementById('rx');
+            img.style.display = 'none';
+            img.src = ""; 
+
+            if (currentAudio) { currentAudio.pause(); currentAudio.currentTime = 0; }
+            
+            // EncodeURIComponent handles special characters/emojis in URLs
+            const file = encodeURIComponent(emoji);
+            currentAudio = new Audio(BASE + file + ".mp3");
+            currentAudio.play().catch(e => console.log("Audio play blocked. Interact with the page first."));
+
+            setTimeout(() => {
+                img.src = BASE + file + ".gif?t=" + new Date().getTime();
+                img.style.display = 'block';
+            }, 50);
+
+            setTimeout(() => { img.style.display = 'none'; }, 4500);
+        }
+    <\/script>
+</body>
+</html>`;
+        const el = document.createElement('textarea');
+        el.value = code;
+        document.body.appendChild(el);
+        el.select();
+        document.execCommand('copy');
+        document.body.removeChild(el);
+        alert("Success! Code for Genially is copied to clipboard.");
+    }
+    draw();
+</script>
+</body>
+</html>
