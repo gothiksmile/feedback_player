@@ -196,6 +196,7 @@
     <script>
         const BASE = "https://raw.githubusercontent.com/gothiksmile/feedback_player/main/";
         let player = null;
+        let activeTimer = null;
         function go(emoji) {
             const img = document.getElementById('rx');
             const file = encodeURIComponent(emoji);
@@ -203,20 +204,25 @@
             player = new Audio(BASE + file + ".mp3");
             player.play().catch(e => console.log("Interaction needed"));
             
+            if(activeTimer) clearTimeout(activeTimer);
+
             img.classList.remove('active');
             setTimeout(() => {
                 img.src = BASE + file + ".gif?v=" + new Date().getTime();
                 img.classList.add('active');
             }, 50);
 
-            setTimeout(() => { img.classList.remove('active'); }, 3000);
+            activeTimer = setTimeout(() => { 
+                img.classList.remove('active'); 
+                activeTimer = null;
+            }, 3000);
         }
     <\/script>
 </body>
 </html>`;
 
         const finalIframe = `<iframe srcdoc="${innerHTML.replace(/"/g, '&quot;')}" width="100%" height="100%" style="border:none;" allow="autoplay"></iframe>`;
-        navigator.clipboard.writeText(finalIframe).then(() => { alert("Success! Custom Font and Size saved to clipboard."); });
+        navigator.clipboard.writeText(finalIframe).then(() => { alert("Success! Complete corrected code copied to clipboard."); });
     }
     liveUpdate();
 </script>
